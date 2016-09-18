@@ -6,6 +6,29 @@
 
 
 //*************************************************************************************************
+//*** serDumpUsage()
+//***
+//*************************************************************************************************
+void serDumpUsage()
+{
+	serPrintString("USAGE:\r\n");
+	serPrintString("  ?  show help menu (this)\r\n");
+	
+	serPrintString("  +  increase mem page\r\n");
+	serPrintString("  -  decrease mem page\r\n");
+	serPrintString("  0  set mem page to zero\r\n");
+
+	serPrintString("  S  show flash status (human readable)\r\n");
+	serPrintString("  s  show flash status (FSR register value in HEX)\r\n");
+	serPrintString("  W  enable flash write\r\n");
+	serPrintString("  w  disable flash write\r\n");
+	
+	serPrintString("  r  dump mem page in HEX\r\n");
+		
+}
+
+
+//*************************************************************************************************
 //*** serPrintString()
 //***
 //*************************************************************************************************
@@ -16,8 +39,22 @@ void serPrintString( char *pstr )
 	
 	while( *pstr != NULL )
 		Serial.write( *pstr++ );
-		
 }
+
+
+//*************************************************************************************************
+//*** serPrintHex08()
+//***
+//*************************************************************************************************
+void serPrintHex08( uint8_t value )
+{
+	uint8_t i = 0;
+	char str[3];
+	
+	sprintf( (char *)&str[0], "%02X", value );
+	serPrintString( (char *)&str );
+}
+
 
 //*************************************************************************************************
 //*** serDumpBufHex()
@@ -30,8 +67,12 @@ void serDumpBufHex( uint16_t len, uint8_t *buf )
 
 	while( len-- )
 	{
-		sprintf( (char *)&str[0], "%02X ", *buf++ );
-		serPrintString( (char *)&str );
+//		sprintf( (char *)&str[0], "%02X ", *buf++ );
+//		serPrintString( (char *)&str );
+		
+		serPrintHex08( *buf++ );
+		serPrintString(" ");
+		
 		if( !(++i % 16) )
 			serPrintString("\r\n");
 	}

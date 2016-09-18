@@ -8,7 +8,7 @@
 // CHIPKIT MAX32
 #define PIN_PROG     77
 #define PIN_RESET    76
-#define PIN_CS       74
+#define PIN_CS       75
 
 // TEENSY LC
 //#define PIN_PROG     xx

@@ -86,11 +86,15 @@ Works with 16kB and 32kB versions of the chip.
 
   Commands implemented (so far):
 
+    ?      show help
     0      set NRF memory page address (n*512) to zero
     +      increase NRF memory page address; max is 63
     -      decrease NRF memory page address
+    S      show flash memory status (in human readable form)
+    s      show flash memory status (FSR register value in HEX)
+    W      enable  write or erase of flash memory
+    w      disable write or erase of flash memory
     r      dump memory content of current NRF memory page in HEX
-    s      dump contents of the FSR register in human readable form
 
   ...
 
