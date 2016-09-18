@@ -88,6 +88,7 @@ Works with 16kB and 32kB versions of the chip.
 
   Commands implemented (so far):
 
+    \?      show help
     0      set NRF memory page address (n*512) to zero
     +      increase NRF memory page address; max is 63
     -      decrease NRF memory page address
@@ -96,7 +97,6 @@ Works with 16kB and 32kB versions of the chip.
     W      enable  write or erase of flash memory
     w      disable write or erase of flash memory
     r      dump memory content of current NRF memory page in HEX
-    ?      show help
 
   ...
 
