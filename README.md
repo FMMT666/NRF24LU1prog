@@ -56,7 +56,7 @@ Works with 16kB and 32kB versions of the chip.
 ### CONNECTIONS
 
   To program an NRF24LU1+ via [SPI][6], at least 8 pins are required:
-  
+
   - MOSI
   - MISO
   - SCLK
@@ -65,7 +65,7 @@ Works with 16kB and 32kB versions of the chip.
   - 3V3
   - GND
 
-  In very rare cases it might be necessary to also wire the RESET pin, e.g.
+  In very rare cases, it might be necessary to additionally wire the RESET pin, e.g.
   when the NRF24 is powered externally and can't be turned on or off.
   
   ...
@@ -79,7 +79,7 @@ Works with 16kB and 32kB versions of the chip.
 
   For the ease of it, all commands can be send/read via a serial UART/VCP terminal.  
   Serial settings are "8N1":
-  
+
   - 115200 bits/s
   - 8 data bits
   - 1 stop bit
@@ -90,6 +90,7 @@ Works with 16kB and 32kB versions of the chip.
     +      increase NRF memory page address; max is 63
     -      decrease NRF memory page address
     r      dump memory content of current NRF memory page in HEX
+    s      dump contents of the FSR register in human readable form
 
   ...
 

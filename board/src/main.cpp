@@ -14,8 +14,10 @@
 #include "nrf24lu1.h"
 
 
-// TESTING TODO
-uint8_t bufDbg[520];
+
+// TODO
+#define BUFSIZE (520)
+uint8_t bufDbg[BUFSIZE];
 
 
 //*************************************************************************************************
@@ -45,9 +47,8 @@ void setup()
 	// burp
 	delay( 100 );
 
-	// TESTING TODO
-	for( uint16_t i = 0; i < 512; i ++ )
-		bufDbg[i] = (uint8_t)i % 256;
+	// nice mem
+	memset( bufDbg, 0x00, BUFSIZE );
 	
 }
 
@@ -83,15 +84,24 @@ void loop()
 				break;
 			//-----------------------------------------
 			case 'r':
+				// TESTING ONLY
+				memset( bufDbg, 0x00, BUFSIZE );
+
 				bufDbg[0] = NRF_CMD_READ;
 				bufDbg[1] = (nrfPageAddr * 512) >> 8;   // high
 				bufDbg[2] = (nrfPageAddr * 512) & 0xff; // low
 				
-				// TESTING TODO
-				serDumpBufHex( 64, (uint8_t *)&bufDbg );
 				spiWriteRead ( 64, (uint8_t *)&bufDbg );
 				serDumpBufHex( 64, (uint8_t *)&bufDbg );
 				break;
+			//-----------------------------------------
+			case 's':
+				bufDbg[0] = NRF_CMD_RDSR;
+				bufDbg[1] = 0x00;         // result will be in here
+
+				spiWriteRead ( 2,  (uint8_t *)&bufDbg );
+				serDumpFSR( bufDbg[1] );
+				
 			//-----------------------------------------
 			default:
 				break;
