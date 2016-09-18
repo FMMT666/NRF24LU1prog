@@ -1,0 +1,5 @@
+*~
+*.bak
+*.tmp
+.pioenvs
+.travis.yml
