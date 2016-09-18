@@ -80,15 +80,13 @@ Works with 16kB and 32kB versions of the chip.
   For the ease of it, all commands can be send/read via a serial UART/VCP terminal.  
   Serial settings are "8N1":
 
-
- - 115200 bits/s
- - 8 data bits
- - 1 stop bit
-
+  - 115200 bits/s
+  - 8 data bits
+  - 1 stop bit
 
   Commands implemented (so far):
 
-    '?'      show help
+    h      show help
     0      set NRF memory page address (n*512) to zero
     +      increase NRF memory page address; max is 63
     -      decrease NRF memory page address
