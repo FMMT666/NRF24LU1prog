@@ -36,8 +36,8 @@ Works with 16kB and 32kB versions of the chip.
   NRF24LU1prog should [tm] run on a lot of 3.3V Arduino-compatible boards.  
   Currently implemented are:
 
-    - [ChipKIT Max32][20]
-    - [Teensy LC][21]
+  - [ChipKIT Max32][20]
+  - [Teensy LC][21]
 
 #### ADDING YOUR OWN BOARD
 
@@ -80,9 +80,11 @@ Works with 16kB and 32kB versions of the chip.
   For the ease of it, all commands can be send/read via a serial UART/VCP terminal.  
   Serial settings are "8N1":
 
+
   - 115200 bits/s
   - 8 data bits
   - 1 stop bit
+
 
   Commands implemented (so far):
 
