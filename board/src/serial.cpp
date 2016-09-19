@@ -22,6 +22,7 @@ void serDumpUsage()
 	serPrintString("  s  show flash status (FSR register value in HEX)\r\n");
 	serPrintString("  W  enable flash write\r\n");
 	serPrintString("  w  disable flash write\r\n");
+	serPrintString("  E  erase all (requires W cmd to enable flash write\r\n");
 	
 	serPrintString("  r  dump mem page in HEX\r\n");
 		

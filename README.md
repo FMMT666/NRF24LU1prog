@@ -94,6 +94,7 @@ Works with 16kB and 32kB versions of the chip.
     s      show flash memory status (FSR register value in HEX)
     W      enable  write or erase of flash memory
     w      disable write or erase of flash memory
+    E      erase all; requires W (enable flash memory write/erase)
     r      dump memory content of current NRF memory page in HEX
 
   ...

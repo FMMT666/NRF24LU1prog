@@ -74,41 +74,40 @@ void loop()
 		switch( (ch = Serial.read()) )
 		{
 			//-----------------------------------------
+			//--- help
 			case '?':
 				serDumpUsage();
 				break;
 			//-----------------------------------------
+			//--- increase mem page
 			case '+':
 				if( nrfPageAddr < 63 )
 					nrfPageAddr++;
 				break;
 			//-----------------------------------------
+			//--- decrease mem page
 			case '-':
 				if( nrfPageAddr > 0 )
 					nrfPageAddr--;
 				break;
 			//-----------------------------------------
+			//--- set mem page to zero
 			case '0':
 				nrfPageAddr = 0;
 				break;
 			//-----------------------------------------
+			//--- flash status (human readable)
 			case 'S':
-				bufDbg[0] = NRF_CMD_RDSR;
-				bufDbg[1] = 0x00;         // result will be in here
-
-				spiWriteRead ( 2,  (uint8_t *)&bufDbg );
-				serDumpFSR( bufDbg[1] );
+				serDumpFSR( nrfReadFSR() );
 				break;
 			//-----------------------------------------
+			//--- flash status (single hex output)
 			case 's':
-				bufDbg[0] = NRF_CMD_RDSR;
-				bufDbg[1] = 0x00;         // result will be in here
-
-				spiWriteRead ( 2,  (uint8_t *)&bufDbg );
-				serPrintHex08( bufDbg[1] );
+				serPrintHex08( nrfReadFSR() );
 				serPrintString( "\r\n" );
 				break;
 			//-----------------------------------------
+			//--- enable flash write/erase
 			case 'W':
 				bufDbg[0] = NRF_CMD_WREN;
 
@@ -116,11 +115,52 @@ void loop()
 				serPrintString( "WREN\r\n" );
 				break;
 			//-----------------------------------------
+			//--- disable flash write/erase
 			case 'w':
 				bufDbg[0] = NRF_CMD_WRDIS;
 
 				spiWriteRead ( 1,  (uint8_t *)&bufDbg );
 				serPrintString( "WRDIS\r\n" );
+				break;
+			//-----------------------------------------
+			//--- erase all (but never the infopage)
+			case 'E':
+				// read flash status before doing anything...
+				bufDbg[1] = nrfReadFSR();
+				
+				// reading the reserved bit should result in a zero
+				if( bufDbg[1] & NRF_FSR_RESERVED )
+				{
+					serPrintString( "ERR\r\n" );
+					break;
+				}
+
+				// if INFEN is set, the ERASE_ALL command will delete the
+				// InfoPage and kill the NRF24LU1.
+				// That's not what we want...
+				if( bufDbg[1] & NRF_FSR_INFEN )
+				{
+					serPrintString( "ERR INFEN\r\n" );
+					break;
+				}
+
+				// is flash erase allowed?
+				if( (bufDbg[1] & NRF_FSR_WEN) == 0 )
+				{
+					serPrintString( "ERR WEN\r\n" );
+					break;
+				}
+				
+				// now, it's safe [tm] to erase the chip...
+				bufDbg[0] = NRF_CMD_ERASEALL;
+				spiWriteRead ( 1,  (uint8_t *)&bufDbg );
+				serPrintString( "ERASING" );
+
+				// wait until finished...
+				while( nrfReadFSR() & NRF_FSR_RDYN )
+					serPrintString( "." );
+				serPrintString( "DONE\r\n" );
+				
 				break;
 			//-----------------------------------------
 			case 'r':
