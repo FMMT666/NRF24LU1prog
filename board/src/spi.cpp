@@ -43,6 +43,8 @@ int spiRead( uint16_t len, uint8_t *buf )
 //*************************************************************************************************
 //*** spiWriteRead()
 //***
+//*** I somehow begin to dislike this brilliant idea of doing READ and WRITE
+//*** with the same buffer :-)
 //*************************************************************************************************
 int spiWriteRead( uint16_t len, uint8_t *wrBuf )
 {

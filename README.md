@@ -1,13 +1,6 @@
 NRF24LU1prog
 ============
 
----
-    (RE)WORK IN PROGRESS
-    
-    NOTHING FUNCTIONAL IN HERE (YET)
-    ASkr, 18.09.2016
-
----
 Program bricked, bootloader-less or code protected [NRF24LU1+][1] via SPI.  
 Works with 16kB and 32kB versions of the chip.
 
@@ -17,7 +10,7 @@ Works with 16kB and 32kB versions of the chip.
 
 ### CHANGES 2016/09/XX:
 
-    - initial upload
+    - initial upload; not much to see, for now...
 
 
 ---
@@ -47,8 +40,36 @@ Works with 16kB and 32kB versions of the chip.
 ---
 ## COMPILE & INSTALL
 
-...
+### BOARD
 
+  TL;DR:  
+  Inside the 'board' directory, type
+  
+    platformio run
+  
+  to compile or
+  
+    platformio run --target upload
+  
+  to compile and upload the firmware.
+  
+  You might wish to edit the targets (boards) in the 'platformio.ini' file:
+
+    [env:mega_pic32]
+    platform = microchippic32
+    board = mega_pic32
+    framework = arduino
+
+    ;[env:teensylc]
+    ;platform = teensy
+    ;board = teensylc
+    ;framework = arduino
+
+  Just comment out the stuff you don't need with a leading ';'.
+
+### PC
+
+  ...
 
 ---
 ## HW-SETUP
@@ -72,6 +93,13 @@ Works with 16kB and 32kB versions of the chip.
 
 ---
 ## USAGE
+
+  NOTICE:
+    
+    Some boards, e.g. the ChipKIT Max32, perform a reset after
+    the serial port on the PC was opened and spend some seconds
+    in the bootloader first.
+
 
 ### TERMINAL MODE
 
@@ -102,6 +130,16 @@ Works with 16kB and 32kB versions of the chip.
 ### PROGARMMING
 
   ...
+
+
+---
+## TODO
+
+    - remove that "one buffer for read write" thingy
+    - commands to manipulate buffer contents
+    - program command
+    - ...
+
 
 ---
 ## LICENSE
