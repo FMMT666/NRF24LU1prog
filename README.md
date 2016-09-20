@@ -123,7 +123,8 @@ Works with 16kB and 32kB versions of the chip.
     W      enable  write or erase of flash memory
     w      disable write or erase of flash memory
     E      erase all; requires W (enable flash memory write/erase)
-    r      dump memory content of current NRF memory page in HEX
+    r      read memory of current selected NRF memory page in buffer
+    d      dump memory buffer to console (in HEX)
 
   ...
 

@@ -24,7 +24,8 @@ void serDumpUsage()
 	serPrintString("  w  disable flash write\r\n");
 	serPrintString("  E  erase all (requires W cmd to enable flash write\r\n");
 	
-	serPrintString("  r  dump mem page in HEX\r\n");
+	serPrintString("  r  read memory page from chip\r\n");
+	serPrintString("  d  dump mem page in HEX\r\n");
 		
 }
 

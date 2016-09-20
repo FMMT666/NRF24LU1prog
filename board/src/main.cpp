@@ -15,9 +15,13 @@
 
 
 
-// TODO
-#define BUFSIZE (520)
-uint8_t bufDbg[BUFSIZE];
+// buffer (mostly) for flash memory operations
+#define BUFSIZEMEM (520)
+uint8_t bufMem[BUFSIZEMEM];
+
+// buffer for commands (keep an eye on the length :-)
+#define BUFSIZECMD (  6)
+uint8_t bufCmd[BUFSIZECMD];
 
 
 //*************************************************************************************************
@@ -36,9 +40,9 @@ void setup()
 	SPI.setDataMode( SPI_MODE0 );
 	SPI.setClockDivider( SPI_CLOCK_DIV8 ); // TODO (default is _DIV4, I guess)
 
-  pinMode( PIN_PROG,  OUTPUT );
-  pinMode( PIN_RESET, OUTPUT );
-  pinMode( PIN_CS,    OUTPUT );
+	pinMode( PIN_PROG,  OUTPUT );
+	pinMode( PIN_RESET, OUTPUT );
+	pinMode( PIN_CS,    OUTPUT );
 
 	digitalWrite( PIN_CS,    HIGH );
 	digitalWrite( PIN_PROG,  HIGH );
@@ -53,7 +57,8 @@ void setup()
 	digitalWrite( PIN_PROG,  HIGH );
 
 	// nice mem
-	memset( bufDbg, 0x00, BUFSIZE );
+	memset( bufMem, 0x00, BUFSIZEMEM );
+	memset( bufCmd, 0x00, BUFSIZEMEM );
 	
 }
 
@@ -109,27 +114,28 @@ void loop()
 			//-----------------------------------------
 			//--- enable flash write/erase
 			case 'W':
-				bufDbg[0] = NRF_CMD_WREN;
+				bufCmd[0] = NRF_CMD_WREN;
 
-				spiWriteRead ( 1,  (uint8_t *)&bufDbg );
+				spiWrite( 1, bufCmd );
 				serPrintString( "WREN\r\n" );
 				break;
 			//-----------------------------------------
 			//--- disable flash write/erase
 			case 'w':
-				bufDbg[0] = NRF_CMD_WRDIS;
+				bufCmd[0] = NRF_CMD_WRDIS;
 
-				spiWriteRead ( 1,  (uint8_t *)&bufDbg );
+				spiWrite( 1, bufCmd );
 				serPrintString( "WRDIS\r\n" );
 				break;
 			//-----------------------------------------
 			//--- erase all (but never the infopage)
 			case 'E':
+				uint8_t regFSR;
 				// read flash status before doing anything...
-				bufDbg[1] = nrfReadFSR();
+				regFSR = nrfReadFSR();
 				
 				// reading the reserved bit should result in a zero
-				if( bufDbg[1] & NRF_FSR_RESERVED )
+				if( regFSR & NRF_FSR_RESERVED )
 				{
 					serPrintString( "ERR\r\n" );
 					break;
@@ -138,39 +144,47 @@ void loop()
 				// if INFEN is set, the ERASE_ALL command will delete the
 				// InfoPage and kill the NRF24LU1.
 				// That's not what we want...
-				if( bufDbg[1] & NRF_FSR_INFEN )
+				if( regFSR & NRF_FSR_INFEN )
 				{
 					serPrintString( "ERR INFEN\r\n" );
 					break;
 				}
 
 				// is flash erase allowed?
-				if( (bufDbg[1] & NRF_FSR_WEN) == 0 )
+				if( (regFSR & NRF_FSR_WEN) == 0 )
 				{
 					serPrintString( "ERR WEN\r\n" );
 					break;
 				}
 				
 				// now, it's safe [tm] to erase the chip...
-				bufDbg[0] = NRF_CMD_ERASEALL;
-				spiWriteRead ( 1,  (uint8_t *)&bufDbg );
+				bufCmd[0] = NRF_CMD_ERASEALL;
+				spiWrite ( 1, bufCmd );
 				serPrintString( "ERASING" );
 
 				// wait until finished...
 				while( nrfReadFSR() & NRF_FSR_RDYN )
 					serPrintString( "." );
+				serPrintString( "\r\n" );
 				serPrintString( "DONE\r\n" );
 				
 				break;
 			//-----------------------------------------
+			//--- read memory from chip (to buffer)
 			case 'r':
-				bufDbg[0] = NRF_CMD_READ;
-				bufDbg[1] = (nrfPageAddr * 512) >> 8;   // high
-				bufDbg[2] = (nrfPageAddr * 512) & 0xff; // low
-				bufDbg[3] = 0x00;                       // results from here on
-				
-				spiWriteRead ( 512 + 3, (uint8_t *)&bufDbg[0] );
-				serDumpBufHex( 512,     (uint8_t *)&bufDbg[3] );
+				bufCmd[0] = NRF_CMD_READ;
+				bufCmd[1] = (nrfPageAddr * 512) >> 8;   // high
+				bufCmd[2] = (nrfPageAddr * 512) & 0xff; // low
+				bufCmd[3] = 0x00;                       // results from here on
+
+				spiWriteRead2( 4, bufCmd, 512, bufMem );
+				serPrintHex08( nrfPageAddr );
+				serPrintString( "\r\n" );
+				break;
+			//-----------------------------------------
+			//--- dump buffer to console (HEX)
+			case 'd':
+				serDumpBufHex( 512, bufMem );
 				break;
 			//-----------------------------------------
 			default:

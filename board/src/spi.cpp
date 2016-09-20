@@ -60,3 +60,25 @@ int spiWriteRead( uint16_t len, uint8_t *wrBuf )
 	return 0;
 }
 
+
+//*************************************************************************************************
+//*** spiWriteRead2()
+//***
+//*************************************************************************************************
+int spiWriteRead2( uint16_t wrLen, uint8_t *wrBuf, uint16_t rdLen, uint8_t *rdBuf )
+{
+	digitalWrite( PIN_CS, LOW );
+	
+	for( ; wrLen; wrLen-- )
+		SPI.transfer( *wrBuf++ );		
+
+	for( ; rdLen; rdLen-- )
+		*rdBuf++ = SPI.transfer( 0xff );		
+	
+
+	digitalWrite( PIN_CS, HIGH );
+
+	return 0;
+}
+
+
