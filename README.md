@@ -8,6 +8,29 @@ Works with 16kB and 32kB versions of the chip.
 ---
 ## NEWS
 
+### STATUS 2016/09/21:
+
+  Board:
+
+    [X] serial comm (PC)
+    [X] serial buffer dump
+    [ ] serial buffer write
+    [X] SPI comm (NRF)
+    [X] NRF24 mem read
+    [ ] NRF24 mem prog
+    [ ] NRF24 mem verify
+    [X] NRF24 erase
+    [X] NRF24 FSR read
+    [X] NRF24 flash operation wait
+    [ ] ...
+
+  PC:    
+    
+    [ ] PC SW, Python
+    [X] lot of checkboxes missing
+    [ ] ...
+
+
 ### CHANGES 2016/09/XX:
 
     - initial upload; not much to see, for now...
