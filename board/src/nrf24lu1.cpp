@@ -17,7 +17,7 @@ uint8_t nrfReadFSR()
 	buf[0] = NRF_CMD_RDSR;
 	buf[1] = 0xFF;
 
-	spiWriteRead ( 2, (uint8_t *)&buf );
+	spiWriteRead ( 2, buf );
 	
 	return buf[1];
 }

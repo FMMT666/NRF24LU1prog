@@ -175,9 +175,8 @@ void loop()
 				bufCmd[0] = NRF_CMD_READ;
 				bufCmd[1] = (nrfPageAddr * 512) >> 8;   // high
 				bufCmd[2] = (nrfPageAddr * 512) & 0xff; // low
-				bufCmd[3] = 0x00;                       // results from here on
 
-				spiWriteRead2( 4, bufCmd, 512, bufMem );
+				spiWriteRead2( 3, bufCmd, 512, bufMem );
 				serPrintHex08( nrfPageAddr );
 				serPrintString( "\r\n" );
 				break;
