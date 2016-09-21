@@ -148,6 +148,7 @@ Works with 16kB and 32kB versions of the chip.
     E      erase all; requires W (enable flash memory write/erase)
     r      read memory of current selected NRF memory page in buffer
     d      dump memory buffer to console (in HEX)
+    b      write to memory buffer, followed by 36 HEX digits (2B addr + 16B data)
 
   ...
 

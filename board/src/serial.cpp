@@ -26,6 +26,8 @@ void serDumpUsage()
 	
 	serPrintString("  r  read memory page from chip\r\n");
 	serPrintString("  d  dump mem page in HEX\r\n");
+
+	serPrintString("  b  write to buffer, followed by 36 HEX digits (2B addr + 16B data)\r\n");
 		
 }
 
@@ -41,6 +43,16 @@ void serPrintString( char *pstr )
 	
 	while( *pstr != NULL )
 		Serial.write( *pstr++ );
+}
+
+
+//*************************************************************************************************
+//*** serPrintChar()
+//***
+//*************************************************************************************************
+void serPrintChar( char ch )
+{
+	Serial.write( ch );
 }
 
 
@@ -69,9 +81,6 @@ void serDumpBufHex( uint16_t len, uint8_t *buf )
 
 	while( len-- )
 	{
-//		sprintf( (char *)&str[0], "%02X ", *buf++ );
-//		serPrintString( (char *)&str );
-		
 		serPrintHex08( *buf++ );
 		serPrintString(" ");
 		

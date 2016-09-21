@@ -20,7 +20,7 @@
 uint8_t bufMem[BUFSIZEMEM];
 
 // buffer for commands (keep an eye on the length :-)
-#define BUFSIZECMD (  6)
+#define BUFSIZECMD ( 40)
 uint8_t bufCmd[BUFSIZECMD];
 
 
@@ -58,7 +58,7 @@ void setup()
 
 	// nice mem
 	memset( bufMem, 0x00, BUFSIZEMEM );
-	memset( bufCmd, 0x00, BUFSIZEMEM );
+	memset( bufCmd, 0x00, BUFSIZECMD );
 	
 }
 
@@ -70,14 +70,63 @@ void setup()
 //*************************************************************************************************
 void loop()
 {
-	static uint8_t nrfPageAddr = 0;
+	static uint8_t nrfPageAddr =  0;
+	static int16_t bufMem16Ptr = -1;  // 512 bytes of buffer divided in 16 byte chunks (0..31)
+	static uint8_t pendingCmd  =  0;
+	static uint8_t pendingData =  0;
 	uint8_t ch;
-	
+
 	// no error or plausibility checks; you have been warned...
 	if( Serial.available() > 0 )
 	{
-		switch( (ch = Serial.read()) )
+		// read byte from serial
+		ch = Serial.read();
+
+		//-------------------------------------------------------------------------
+		//--- check pending command 'b'
+		if( pendingCmd == 'b' )
 		{
+			if(  ( pendingData > 0 )  &&  ( isHexadecimalDigit(ch) )  ) 
+			{
+				bufCmd[36 - pendingData] = tolower( ch );
+				serPrintChar( ch );
+				
+				if( --pendingData == 0 )
+				{
+					bufCmd[36] = 0;
+					serPrintString( "\r\n" );
+					
+					// TESTING ONLY
+					serPrintString( (char *)&bufCmd );
+					serPrintString( "\r\n" );
+					pendingCmd =  0;
+					
+					// TODO: insert buffer storage handling right here...
+					
+				}
+			}
+			else
+			{
+				pendingCmd =  0;
+				pendingData = 0;
+				serPrintString( "ERR\r\n" );
+			}
+
+			return;
+		}
+		
+
+		//-------------------------------------------------------------------------
+		//--- check other commands
+		switch( ch )
+		{
+			//-----------------------------------------
+			//--- write to buffer (multi byte command)
+			case 'b':
+				pendingCmd  = 'b';
+				pendingData = 36;  // 36 bytes to read (HEXstring: 4 bytes mem pageess and 32 bytes 
+				serPrintString( "BUF\r\n" );
+				break;
 			//-----------------------------------------
 			//--- help
 			case '?':
@@ -184,6 +233,11 @@ void loop()
 			//--- dump buffer to console (HEX)
 			case 'd':
 				serDumpBufHex( 512, bufMem );
+				break;
+			//-----------------------------------------
+			//--- return marker
+			case '\n':
+				serPrintString( "nop\r\n" );
 				break;
 			//-----------------------------------------
 			default:
