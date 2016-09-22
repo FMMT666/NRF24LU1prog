@@ -15,12 +15,18 @@
 
 
 
+// length of a "write to buffer" HEX string (w/o a trailing 0!)
+// "AA01020304..0F"
+// 2 HEX digits for the memory page address (0..31 dec), followed by 32 HEX digits,
+// representing 16 bytes of memory data.
+#define BUFWRITELEN  34
+
 // buffer (mostly) for flash memory operations
-#define BUFSIZEMEM (520)
+#define BUFSIZEMEM  520
 uint8_t bufMem[BUFSIZEMEM];
 
 // buffer for commands (keep an eye on the length :-)
-#define BUFSIZECMD ( 40)
+#define BUFSIZECMD  (BUFWRITELEN + 2)
 uint8_t bufCmd[BUFSIZECMD];
 
 
@@ -71,7 +77,7 @@ void setup()
 void loop()
 {
 	static uint8_t nrfPageAddr =  0;
-	static int16_t bufMem16Ptr = -1;  // 512 bytes of buffer divided in 16 byte chunks (0..31)
+//	static int16_t bufMem16Ptr = -1;  // 512 bytes of buffer divided in 16 byte chunks (0..31)
 	static uint8_t pendingCmd  =  0;
 	static uint8_t pendingData =  0;
 	uint8_t ch;
@@ -88,23 +94,37 @@ void loop()
 		{
 			if(  ( pendingData > 0 )  &&  ( isHexadecimalDigit(ch) )  ) 
 			{
-				bufCmd[36 - pendingData] = tolower( ch );
+				bufCmd[BUFWRITELEN - pendingData] = tolower( ch );
 				serPrintChar( ch );
 				
 				if( --pendingData == 0 )
 				{
-					bufCmd[36] = 0;
-					serPrintString( "\r\n" );
-					
-					// TESTING ONLY
-					serPrintString( (char *)&bufCmd );
-					serPrintString( "\r\n" );
 					pendingCmd =  0;
 					
-					// TODO: insert buffer storage handling right here...
-					
-				}
-			}
+					// add a 0, just in case we need to print that to the console...
+					bufCmd[BUFWRITELEN] = 0;
+					serPrintString( "\r\n" );
+
+					// calculate the buffer address
+					uint16_t bAddr = 16 * (  16 * ser1Hex2Dec( bufCmd[0] ) + ser1Hex2Dec( bufCmd[1] )  );
+					if( bAddr > 16 * 31 )
+						// nope, that would exceed the buffer size
+						serPrintString( "ERR\r\n" );
+					else
+					{
+						// return what was received
+						serPrintString( (char *)&bufCmd );
+						serPrintString( "\r\n" );
+
+						// store the received memory chunk
+						for( uint8_t i = 0; i < 16; i++ )
+							bufMem[ bAddr + i ] = 16 * ser1Hex2Dec( bufCmd[2 + 2*i] ) + ser1Hex2Dec( bufCmd[2 + 2*i + 1] );
+							
+					}// END everything is fine
+
+				}// END no pending data
+				
+			}// END pending data & valid char
 			else
 			{
 				pendingCmd =  0;
@@ -113,7 +133,7 @@ void loop()
 			}
 
 			return;
-		}
+		}// END pending cmd 'b'
 		
 
 		//-------------------------------------------------------------------------
@@ -124,7 +144,7 @@ void loop()
 			//--- write to buffer (multi byte command)
 			case 'b':
 				pendingCmd  = 'b';
-				pendingData = 36;  // 36 bytes to read (HEXstring: 4 bytes mem pageess and 32 bytes 
+				pendingData = BUFWRITELEN;  // 34 bytes to read (HEXstring: 2 bytes mem page addr and 32 bytes mem HEX digits)
 				serPrintString( "BUF\r\n" );
 				break;
 			//-----------------------------------------

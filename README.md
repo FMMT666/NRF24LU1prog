@@ -14,7 +14,7 @@ Works with 16kB and 32kB versions of the chip.
 
     [X] serial comm (PC)
     [X] serial buffer dump
-    [ ] serial buffer write
+    [X] serial buffer write
     [X] SPI comm (NRF)
     [X] NRF24 mem read
     [ ] NRF24 mem prog
@@ -136,19 +136,21 @@ Works with 16kB and 32kB versions of the chip.
     - 1 stop bit
 
   Commands implemented (so far):
-    
-    ?      show help
-    0      set NRF memory page address (n*512) to zero
-    +      increase NRF memory page address; max is 63
-    -      decrease NRF memory page address
-    S      show flash memory status (in human readable form)
-    s      show flash memory status (FSR register value in HEX)
-    W      enable  write or erase of flash memory
-    w      disable write or erase of flash memory
-    E      erase all; requires W (enable flash memory write/erase)
-    r      read memory of current selected NRF memory page in buffer
-    d      dump memory buffer to console (in HEX)
-    b      write to memory buffer, followed by 36 HEX digits (2B addr + 16B data)
+  
+  
+    CMD DATA DESCRIPTION   
+     ?       show help
+     0       set NRF memory page address (n*512) to zero
+     +       increase NRF memory page address; max is 63
+     -       decrease NRF memory page address
+     S       show flash memory status (in human readable form)
+     s       show flash memory status (FSR register value in HEX)
+     W       enable  write or erase of flash memory
+     w       disable write or erase of flash memory
+     E       erase all; requires W (enable flash memory write/erase)
+     r       read memory of current selected NRF memory page in buffer
+     d       dump memory buffer to console (in HEX)
+     b  34   write to memory buffer, followed by 34 HEX digits (1B addr + 16B data)
 
   ...
 

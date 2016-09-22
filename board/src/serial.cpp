@@ -6,6 +6,29 @@
 
 
 //*************************************************************************************************
+//*** ser1Hex2Dec()
+//***
+//*** Converts an HEX digit (0..9, a..f) to a decimal value 0..15.
+//*** In case of an error, 255 is returned.
+//*************************************************************************************************
+uint8_t ser1Hex2Dec( uint8_t hexDigit )
+{
+	uint8_t value = 255;
+	
+	// numbers "0..9"
+	if( ( hexDigit >= 48 ) && ( hexDigit <= 57) )
+		value = hexDigit - 48;
+	else
+	{
+		if( ( hexDigit >= 97 ) && ( hexDigit <= 102) )
+			value = hexDigit - 97 + 10;
+	}
+	
+	return value;
+}
+
+
+//*************************************************************************************************
 //*** serDumpUsage()
 //***
 //*************************************************************************************************
@@ -91,6 +114,7 @@ void serDumpBufHex( uint16_t len, uint8_t *buf )
 	
 }
 
+
 //*************************************************************************************************
 //*** serDumpRegFSR()
 //***
@@ -101,8 +125,8 @@ void serDumpFSR( uint8_t value )
 	sprintf( (char *)&str[0], "0x%02X\r\n", value );
 	
 	serPrintString("FSR REGISTER: "); serPrintString( (char *)&str );
-	serPrintString("  DBG    HW DBG:     "); value & 0x80 ? serPrintString("ON") : serPrintString("OFF"); serPrintString("\r\n");
-	serPrintString("  STP    PRG START:  "); value & 0x40 ? serPrintString("PROTECTED") : serPrintString("0x0000"); serPrintString("\r\n");
+	serPrintString("  DBG    HW DBG      "); value & 0x80 ? serPrintString("ON") : serPrintString("OFF"); serPrintString("\r\n");
+	serPrintString("  STP    PRG START   "); value & 0x40 ? serPrintString("PROTECTED") : serPrintString("0x0000"); serPrintString("\r\n");
 	serPrintString("  WEN    FLASH WR/ER "); value & 0x20 ? serPrintString("ENABLED") : serPrintString("DISABLED"); serPrintString("\r\n");
 	serPrintString("  RDYN   FLASH READY "); value & 0x10 ? serPrintString("BUSY") : serPrintString("READY"); serPrintString("\r\n");
 	serPrintString("  INFEN  INFOPAGE    "); value & 0x08 ? serPrintString("ENABLED (*WARNING*)") : serPrintString("DISABLED"); serPrintString("\r\n");
