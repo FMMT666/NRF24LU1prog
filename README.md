@@ -128,14 +128,18 @@ Works with 16kB and 32kB versions of the chip.
 
 #### COMMANDS
 
+  ...
+
   For the ease of it, all commands can be send/read via a serial UART/VCP terminal.  
   Serial settings are "8N1":
 
     - 115200 bits/s
     - 8 data bits
     - 1 stop bit
+    
+  
 
-  Commands implemented (so far):
+  So far implemented, are:
   
   
     CMD DATA DESCRIPTION   
@@ -152,7 +156,40 @@ Works with 16kB and 32kB versions of the chip.
      d       dump memory buffer to console (in HEX)
      b  34   write to memory buffer, followed by 34 HEX digits (1B addr + 16B data)
 
+
+##### (?) HELP
+
   ...
+
+##### (0/+/-) ADJUST NRF24 MEMORY POINTER
+
+  ...
+
+##### (s/S) SHOW FLASH MEMORY STATUS
+
+  ...
+  
+##### (w/W) ENABLE/DISABLE WRITE/ERASE FLASH MEMORY
+
+  ...
+
+##### (E) ERASE ALL
+
+  ...
+
+##### (r) READ MEMORY FROM NRF24
+
+  ...
+  
+##### (d) DUMP MEMORY BUFFER TO CONSOLE
+
+  ...
+
+##### (b) WRITE TO MEMORY BUFFER
+
+  ...
+  
+
 
 ### PROGARMMING
 
