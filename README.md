@@ -76,7 +76,7 @@ Works with 16kB and 32kB versions of the chip.
     - PROG
 
   In very rare cases, it might be necessary to additionally wire the RESET pin, e.g.
-  when the NRF24 is powered externally and can't be turned on or off.  
+  when the NRF24 is powered externally and can't be turned on or off.
   But that is usually [tm] not required.
 
   The NRF24LU1 has an integrated voltage regulator, so it can either be used with
@@ -88,7 +88,7 @@ Works with 16kB and 32kB versions of the chip.
 
   NOTE 1:
   
-    Notice that the logic pins, including the SPI connections require 3.3V
+    The logic pins, including the SPI connections require 3.3V!
 
   NOTE 2: 
 
@@ -108,17 +108,16 @@ Works with 16kB and 32kB versions of the chip.
 
 #### DEFAULT PINS FOR CHIPKIT MAX32
 
-    MOSI   SP1-1
-    MISO   SP1-4
-    SCLK   SP1-3
+     MOSI  SP1-1
+     MISO  SP1-4
+     SCLK  SP1-3
     
-    CS     75
-    PROG   77
+       CS  75
+     PROG  77
     RESET  76
     
-    5V    
-    GND    SP1-6, or see labels
-    
+       5V  JP6, 5V0 (top right)
+      GND  SP1-6, or see labels
 
 
 #### DEFAULT PINS FOR TEENSY LC
@@ -217,12 +216,9 @@ Works with 16kB and 32kB versions of the chip.
     - 115200 bits/s
     - 8 data bits
     - 1 stop bit
-    
-  
 
-  So far implemented, are:
-  
-  
+  Implemented, so far:
+
     CMD DATA DESCRIPTION   
      ?       show help
      0       set NRF memory page address (n*512) to zero
@@ -242,7 +238,23 @@ Works with 16kB and 32kB versions of the chip.
 
 ##### (?) HELP
 
-  ...
+  Print out an overview of commands that are implemented, e.g.:
+
+    USAGE:
+      ?  show help menu (this)
+      +  increase mem page
+      -  decrease mem page
+      0  set mem page to zero
+      i  RESET and PROG pin cycle
+      S  show flash status (human readable)
+      s  show flash status (FSR register value in HEX)
+      W  enable flash write
+      w  disable flash write
+      E  erase all (requires W cmd to enable flash write
+      r  read memory page from chip
+      d  dump mem page in HEX
+      P  program NRF memory page from buffer (requires W cmd first)
+      b  write to buffer, followed by 36 HEX digits (2B addr + 16B data)
 
 ##### (i) INIT; RESET and PROGADJUST NRF24 MEMORY POINTER
 
@@ -254,15 +266,38 @@ Works with 16kB and 32kB versions of the chip.
 
 ##### (s/S) SHOW FLASH MEMORY STATUS
 
+  Command 's' returns the content of the FSR register as a two digits, ASCII HEX value, followed by
+  a carriage return and a line feed character, e.g.:
+
+    06\r\n
+
+  The captal 'S' outputs the same information in a human readable format, e.g:
+
+    FSR REGISTER: 0x02
+      DBG    HW DBG      OFF
+      STP    PRG START   0x0000
+      WEN    FLASH WR/ER DISABLED
+      RDYN   FLASH READY READY
+      INFEN  INFOPAGE    DISABLED
+      RDISMB SPI RDLOCK  LOCK OFF
+      RDISIP SPI IPLOCK  LOCK ON
+      RES    -
+    
   ...
   
 ##### (w/W) ENABLE/DISABLE WRITE/ERASE FLASH MEMORY
 
-  ...
+  'w' disables write/erase flash memory operations and  
+  'W' (a capital 'w') enabled them.
+
 
 ##### (E) ERASE ALL
 
-  ...
+  'E' (a capital 'e') erases the complete flash memeory.  
+  The InfoPage will not be erased or changed in any way...
+  
+  Notice that this command requires the 'W' command first.
+
 
 ##### (r) READ MEMORY FROM NRF24
 
