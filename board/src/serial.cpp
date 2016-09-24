@@ -41,6 +41,8 @@ void serDumpUsage()
 	serPrintString("  -  decrease mem page\r\n");
 	serPrintString("  0  set mem page to zero\r\n");
 
+	serPrintString("  i  initialize NRF via RESET and PROG pin cycle\r\n");
+
 	serPrintString("  S  show flash status (human readable)\r\n");
 	serPrintString("  s  show flash status (FSR register value in HEX)\r\n");
 	serPrintString("  W  enable flash write\r\n");
@@ -49,6 +51,8 @@ void serDumpUsage()
 	
 	serPrintString("  r  read memory page from chip\r\n");
 	serPrintString("  d  dump mem page in HEX\r\n");
+
+	serPrintString("  P  program NRF memory page from buffer (requires W cmd first)\r\n");
 
 	serPrintString("  b  write to buffer, followed by 36 HEX digits (2B addr + 16B data)\r\n");
 		

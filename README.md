@@ -8,7 +8,7 @@ Works with 16kB and 32kB versions of the chip.
 ---
 ## NEWS
 
-### STATUS 2016/09/21:
+### STATUS 2016/09/22:
 
   Board:
 
@@ -17,7 +17,7 @@ Works with 16kB and 32kB versions of the chip.
     [X] serial buffer write
     [X] SPI comm (NRF)
     [X] NRF24 mem read
-    [ ] NRF24 mem prog
+    [X] NRF24 mem prog
     [ ] NRF24 mem verify
     [X] NRF24 erase
     [X] NRF24 FSR read
@@ -29,6 +29,7 @@ Works with 16kB and 32kB versions of the chip.
     [ ] PC SW, Python
     [X] lot of checkboxes missing
     [ ] ...
+
 
 
 ### CHANGES 2016/09/XX:
@@ -117,7 +118,27 @@ Works with 16kB and 32kB versions of the chip.
 ---
 ## USAGE
 
-  NOTICE:
+  NOTE 1:
+  
+    Most of those already programmed NRF24LU1s (e.g. those from eBay :-)
+    reset the RDISMB/IP bits upon a power, a reset or a PROG pin cycle.
+    
+    ########################################################################
+    You can ONLY read back the NRF24's freshly updated memory, directly
+    after programming it and before a reset, PROG pin change or power cycle.
+    ########################################################################
+    
+    The only way to solve that is to write 0x00 to address 0x23 of the InfoPage,
+    which is (currently) not supported
+
+  NOTE 2:
+
+    Programming or erasing the InfoPage is (currently) disabled.
+    This will brick your NRF24LU1 if the InfoPage cannot be read due to an
+    already issued RDISIP command. That is usually the case if you got your
+    chips from far east eBay sellers...
+
+  NOTE 3:
     
     Some boards, e.g. the ChipKIT Max32, perform a reset after
     the serial port on the PC was opened and spend some seconds
@@ -147,17 +168,23 @@ Works with 16kB and 32kB versions of the chip.
      0       set NRF memory page address (n*512) to zero
      +       increase NRF memory page address; max is 63
      -       decrease NRF memory page address
+     i       initialize NRF via RESET and PROG pin cycle
      S       show flash memory status (in human readable form)
      s       show flash memory status (FSR register value in HEX)
      W       enable  write or erase of flash memory
      w       disable write or erase of flash memory
      E       erase all; requires W (enable flash memory write/erase)
-     r       read memory of current selected NRF memory page in buffer
+     r       read memory of current selected NRF memory page and store in buffer
+     P       program NRF memory from buffer
      d       dump memory buffer to console (in HEX)
      b  34   write to memory buffer, followed by 34 HEX digits (1B addr + 16B data)
 
 
 ##### (?) HELP
+
+  ...
+
+##### (i) INIT; RESET and PROGADJUST NRF24 MEMORY POINTER
 
   ...
 
@@ -180,6 +207,10 @@ Works with 16kB and 32kB versions of the chip.
 ##### (r) READ MEMORY FROM NRF24
 
   ...
+
+##### (P) PROGRAM NRF MEMORY
+
+  ...
   
 ##### (d) DUMP MEMORY BUFFER TO CONSOLE
 
@@ -191,18 +222,10 @@ Works with 16kB and 32kB versions of the chip.
   
 
 
-### PROGARMMING
+### PROGRAMMING
 
   ...
 
-
----
-## TODO
-
-    - remove that "one buffer for read write" thingy
-    - commands to manipulate buffer contents
-    - program command
-    - ...
 
 
 ---
