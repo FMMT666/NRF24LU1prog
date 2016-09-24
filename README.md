@@ -22,6 +22,7 @@ Works with 16kB and 32kB versions of the chip.
     [X] NRF24 erase
     [X] NRF24 FSR read
     [X] NRF24 flash operation wait
+    [ ] automatic pin selections for different boards
     [ ] ...
 
   PC:    
@@ -40,7 +41,7 @@ Works with 16kB and 32kB versions of the chip.
 ---
 ## REQUIREMENTS
 
-  - a 3.3V Arduino compatible board with SPI functionality (see below)
+  - a 3.3V "Arduino-compatible" board with SPI functionality (see below)
   - [PlatformIO][2], [CLI][3] or [IDE][4]
   - [Python][5] interpreter
   - a handful of wires
@@ -62,11 +63,87 @@ Works with 16kB and 32kB versions of the chip.
 
 
 ---
+## HW-SETUP
+
+### CONNECTIONS
+
+  To program an NRF24LU1+ via [SPI][6], at least 5 pins are required:
+
+    - MOSI
+    - MISO
+    - SCLK
+    - CS
+    - PROG
+
+  In very rare cases, it might be necessary to additionally wire the RESET pin, e.g.
+  when the NRF24 is powered externally and can't be turned on or off.  
+  But that is usually [tm] not required.
+
+  The NRF24LU1 has an integrated voltage regulator, so it can either be used with
+  a 5V or a 3V3 power supply.  
+  Notice: EITHER, not BOTH:
+  
+    5V   VBUS  *recommended*
+    3V3  VDD
+
+  NOTE 1:
+  
+    Notice that the logic pins, including the SPI connections require 3.3V
+
+  NOTE 2: 
+
+    The serial in- and output pins need to be cross wired.
+    MOSI of your board to MISO of the NRF24 and vice versa.
+  
+  ...
+  
+  For now, you need to set the connections in the file 'config.h' manually, e.g.:
+
+    // config.h
+    
+    #define PIN_PROG     77
+    #define PIN_RESET    76
+    #define PIN_CS       75
+    
+
+#### DEFAULT PINS FOR CHIPKIT MAX32
+
+    MOSI   SP1-1
+    MISO   SP1-4
+    SCLK   SP1-3
+    
+    CS     75
+    PROG   77
+    RESET  76
+    
+    5V    
+    GND    SP1-6, or see labels
+    
+
+
+#### DEFAULT PINS FOR TEENSY LC
+
+  ...
+  
+
+---
 ## COMPILE & INSTALL
+
+### PLATFORMIO
+
+  Beside the many ways and platforms, described in the the official [installation instruction][8],
+  the easiest way to install PlatformIO is doing that via [PIP][10]:
+
+    pip install -U platformio
+
+  Pip is usually [tm] available via your system's package manager.  
+  E.g. for Ubuntu, it can be installed via
+  
+    sudo apt-get install python-pip 
+
 
 ### BOARD
 
-  TL;DR:  
   Inside the 'board' directory, type
   
     platformio run
@@ -83,37 +160,20 @@ Works with 16kB and 32kB versions of the chip.
     platform = microchippic32
     board = mega_pic32
     framework = arduino
-
+    
     ;[env:teensylc]
     ;platform = teensy
     ;board = teensylc
     ;framework = arduino
 
-  Just comment out the stuff you don't need with a leading ';'.
+  Just comment out the stuff you don't need with a leading semicolon.  
+  Depending on your selection, PlatformIO will automatically install the proper toolchains, required
+  to compile the software for the board you selected.
 
 ### PC
 
   ...
 
----
-## HW-SETUP
-
-### CONNECTIONS
-
-  To program an NRF24LU1+ via [SPI][6], at least 8 pins are required:
-
-    - MOSI
-    - MISO
-    - SCLK
-    - CS
-    - PROG
-    - 3V3
-    - GND
-
-  In very rare cases, it might be necessary to additionally wire the RESET pin, e.g.
-  when the NRF24 is powered externally and can't be turned on or off.
-  
-  ...
 
 ---
 ## USAGE
@@ -246,15 +306,17 @@ Have fun
 FMMT666(ASkr)  
 
 
-[1]: https://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24LU1P
-[2]: http://platformio.org/
-[3]: http://platformio.org/get-started/cli
-[4]: http://platformio.org/platformio-ide
-[5]: https://www.python.org/
-[6]: https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus
-[7]: https://creativecommons.org/licenses/by/4.0/
+[1]:  https://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24LU1P
+[2]:  http://platformio.org/
+[3]:  http://platformio.org/get-started/cli
+[4]:  http://platformio.org/platformio-ide
+[5]:  https://www.python.org/
+[6]:  https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus
+[7]:  https://creativecommons.org/licenses/by/4.0/
+[8]:  http://docs.platformio.org/en/stable/installation.html
+[9]:  https://en.wikipedia.org/wiki/WTFPL
+[10]: https://en.wikipedia.org/wiki/Pip_(package_manager)
 
-[9]: https://en.wikipedia.org/wiki/WTFPL
 
 [20]: https://reference.digilentinc.com/chipkit_max32/refmanual
 [21]: https://www.pjrc.com/teensy/teensyLC.html
