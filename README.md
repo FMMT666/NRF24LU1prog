@@ -55,7 +55,7 @@ Notice that you can't just flash the 32kB bootloader into the 16kB version of th
 ---
 ## NEWS
 
-### STATUS 2016/09/22:
+### STATUS:
 
   Board:
 
@@ -72,6 +72,10 @@ Notice that you can't just flash the 32kB bootloader into the 16kB version of th
     [ ] automatic pin selections for different boards
     [ ] ...
 
+  NRF:
+
+    [ ] InfoPage dumper firmware
+
   PC:    
     
     [ ] PC SW, Python
@@ -79,6 +83,10 @@ Notice that you can't just flash the 32kB bootloader into the 16kB version of th
     [ ] ...
 
 
+### CHANGES 2016/09/29:
+
+    - board FW able to erase/program/read chip;
+      only tested on Chipkit Max32, so far...
 
 ### CHANGES 2016/09/XX:
 
