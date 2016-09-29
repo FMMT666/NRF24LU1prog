@@ -37,9 +37,10 @@ void serDumpUsage()
 	serPrintString("USAGE:\r\n");
 	serPrintString("  ?  show help menu (this)\r\n");
 	
-	serPrintString("  +  increase mem page\r\n");
-	serPrintString("  -  decrease mem page\r\n");
-	serPrintString("  0  set mem page to zero\r\n");
+	serPrintString("  +  increase mem page pointer\r\n");
+	serPrintString("  -  decrease mem page pointer\r\n");
+	serPrintString("  0  set mem page pointer to zero\r\n");
+	serPrintString("  =  show mem page pointer value (decimal)\r\n");
 
 	serPrintString("  i  initialize NRF via RESET and PROG pin cycle\r\n");
 

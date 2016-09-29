@@ -4,6 +4,53 @@ NRF24LU1prog
 Program bricked, bootloader-less or code protected [NRF24LU1+][1] via SPI.  
 Works with 16kB and 32kB versions of the chip.
 
+---
+## BACKGROUND
+
+I wanted some NRF24LU1+ boards, but instead of building my own ones, I bought
+a couple of them from those famous far east eBay traders. Less than 10$, including
+shipping, seemed quite reasonable.
+
+All of those boards came with proprietary FW, without bootloader and SPI access
+locked. As I didn't manage to find any readily available solution to reprogram them,
+I began to develop my own emergency programmer...
+
+---
+The original NRF24LU1+ chips come with a preprogrammed USB bootloader, residing in
+the topmost 2kB of the flash memory of the "MainBlock" and is enabled by default.  
+As soon as you reprogram the chip, you should make sure to not overwrite that area
+and provide a mechanism to enter the bootloader again, e.g. by either restoring
+the original reset vector address or implementing your own code to jump to the
+bootloader's address.
+
+Even with that missing, one could still reprogram the chip via the SPI interface, but
+for good reasons, it is possible to disable the flash memory SPI access. This can be
+done by writing a 0x00 to address 0x23 of the "InfoPage" memory, a special configuration
+memory. There's even a handy SPI command for this: RDISMB.
+
+The only way to reset that memory lock is to erase the complete flash memory ("MainBlock").  
+After that, but only until the next reset, PROG pin or power cycle, you can write and read
+the "MainBlock" flash memory.
+
+To completely reset that access restriction, one needs to set the value of "InfoPage's"
+memory address 0x23 to 0xff, which can only be done by erasing the "InfoPage".
+
+    WARNING:
+    Erasing the "InfoPage" will brick the NRF24LU1+,
+    at least, without creating a backup of it.
+
+If SPI memory access is acitve, one cannot read or backup the "InfoPage", hence the complete
+sequence to regain access to the NRF24LU1+ is:
+
+  1. enable flash write (SPI command "WREN")
+  2. erase complete "MainBlock" (SPI command "ERASE ALL")
+  3. upload a FW that can dump the "InfoPage" contents
+  4. erase the complete "InfoPage" ("ERASE ALL" with INFEN set in SFR "FSR")
+  5. reprogram the "InfoPage", but with addresses 0x23/0x23 set to 0xff
+  6. reprogram the bootloader
+
+Notice that you can't just flash the 32kB bootloader into the 16kB version of the chip.
+
 
 ---
 ## NEWS
