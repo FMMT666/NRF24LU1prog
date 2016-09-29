@@ -173,6 +173,12 @@ void loop()
 			case '0':
 				nrfPageAddr = 0;
 				break;
+
+			//-----------------------------------------
+			//--- show mem page
+			case '=':
+				Serial.println( nrfPageAddr );
+				break;
 				
 			//-----------------------------------------
 			//--- flash status (human readable)

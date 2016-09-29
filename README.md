@@ -242,9 +242,10 @@ Works with 16kB and 32kB versions of the chip.
 
     USAGE:
       ?  show help menu (this)
-      +  increase mem page
-      -  decrease mem page
-      0  set mem page to zero
+      +  increase mem page pointer
+      -  decrease mem page pointer
+      0  set mem page pointer to zero
+      =  show mem page pointer value (in decimal)
       i  RESET and PROG pin cycle
       S  show flash status (human readable)
       s  show flash status (FSR register value in HEX)
