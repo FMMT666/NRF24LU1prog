@@ -20,20 +20,23 @@ The original NRF24LU1+ chips come with a preprogrammed USB bootloader, residing 
 the topmost 2kB of the flash memory of the "MainBlock" and is enabled by default.  
 As soon as you reprogram the chip, you should make sure to not overwrite that area
 and provide a mechanism to enter the bootloader again, e.g. by either restoring
-the original reset vector address or implementing your own code to jump to the
-bootloader's address.
+the original reset vector address or implementing your own code, capable of jumping
+to the bootloader's address.
 
 Even with that missing, one could still reprogram the chip via the SPI interface, but
 for good reasons, it is possible to disable the flash memory SPI access. This can be
 done by writing a 0x00 to address 0x23 of the "InfoPage" memory, a special configuration
 memory. There's even a handy SPI command for this: RDISMB.
 
-The only way to reset that memory lock is to erase the complete flash memory ("MainBlock").  
+Virtually all of those far east traders' NRF24LU1+ boards come with that memory lock.
+
+
+The only way to reset that, is to erase the complete flash memory ("MainBlock").  
 After that, but only until the next reset, PROG pin or power cycle, you can write and read
 the "MainBlock" flash memory.
 
 To completely reset that access restriction, one needs to set the value of "InfoPage's"
-memory address 0x23 to 0xff, which can only be done by erasing the "InfoPage".
+memory address 0x23 to 0xff, which can only be done by erasing the complete "InfoPage".
 
     WARNING:
     Erasing the "InfoPage" will brick the NRF24LU1+,
@@ -46,10 +49,10 @@ sequence to regain access to the NRF24LU1+ is:
   2. erase complete "MainBlock" (SPI command "ERASE ALL")
   3. upload a FW that can dump the "InfoPage" contents
   4. erase the complete "InfoPage" ("ERASE ALL" with INFEN set in SFR "FSR")
-  5. reprogram the "InfoPage", but with addresses 0x23/0x23 set to 0xff
+  5. reprogram the "InfoPage", but with addresses 0x22/0x23 set to 0xff
   6. reprogram the bootloader
 
-Notice that you can't just flash the 32kB bootloader into the 16kB version of the chip.
+Notice that you cannot just flash the 32kB bootloader into the 16kB version of the chip.
 
 
 ---
