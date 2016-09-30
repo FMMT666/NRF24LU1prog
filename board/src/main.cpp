@@ -252,7 +252,6 @@ void loop()
 				else
 				{
 					// program a memory page
-					
 					if( (regFSR & NRF_FSR_RDISMB) )
 					{
 						serPrintString( "ERR RDISMB\r\n" );

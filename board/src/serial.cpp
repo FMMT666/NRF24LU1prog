@@ -64,12 +64,12 @@ void serDumpUsage()
 //*** serPrintString()
 //***
 //*************************************************************************************************
-void serPrintString( char *pstr )
+void serPrintString( const char *pstr )
 {
 	if( pstr == NULL )
 		return;
 	
-	while( *pstr != NULL )
+	while( *pstr != 0 )
 		Serial.write( *pstr++ );
 }
 
@@ -90,7 +90,6 @@ void serPrintChar( char ch )
 //*************************************************************************************************
 void serPrintHex08( uint8_t value )
 {
-	uint8_t i = 0;
 	char str[3];
 	
 	sprintf( (char *)&str[0], "%02X", value );
@@ -105,7 +104,6 @@ void serPrintHex08( uint8_t value )
 void serDumpBufHex( uint16_t len, uint8_t *buf )
 {
 	uint8_t i = 0;
-	char str[6];
 
 	while( len-- )
 	{

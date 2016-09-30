@@ -1,8 +1,11 @@
 NRF24LU1prog
 ============
 
+An NRF24LU1+ SPI programmer for Arduino compatible boards.
+
 Program bricked, bootloader-less or code protected [NRF24LU1+][1] via SPI.  
-Works with 16kB and 32kB versions of the chip.
+Works with 16kB and 32kB variants of the chip.
+
 
 ---
 ## BACKGROUND
@@ -72,7 +75,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
     [X] NRF24 erase
     [X] NRF24 FSR read
     [X] NRF24 flash operation wait
-    [ ] automatic pin selections for different boards
+    [X] automatic pin selections for different boards
     [ ] ...
 
   NRF:
@@ -95,6 +98,13 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
     - initial upload; not much to see, for now...
 
+### TODO:
+
+  - Teensy LC pins
+  - function for "while( nrfReadFSR() & NRF_FSR_RDYN )..."
+  - verify memory (compare with buffer)
+  - erase page (maybe...)
+  -
 
 ---
 ## REQUIREMENTS
@@ -150,12 +160,19 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
   NOTE 2: 
 
-    The serial in- and output pins need to be cross wired.
-    MOSI of your board to MISO of the NRF24 and vice versa.
-  
+    Usually [tm], MOSI (NRF) is connected to MOSI (board) and MISO to MISO.
+    If your board has different names for the SPI connection, use your brain, e.g.:
+    
+       board | NRF
+      -------+------
+        DOUT | MOSI
+         DIN | MISO
+
   ...
   
-  For now, you need to set the connections in the file 'config.h' manually, e.g.:
+  The pins and connections can be specified in 'config.h'.  
+  Notice that there are multiple sections and make sure you are editing the
+  pins related to your board.
 
     // config.h
     
@@ -166,22 +183,43 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
 #### DEFAULT PINS FOR CHIPKIT MAX32
 
-     MOSI  SP1-1
-     MISO  SP1-4
-     SCLK  SP1-3
-    
-       CS  75
-     PROG  77
-    RESET  76
-    
-       5V  JP6, 5V0 (top right)
-      GND  SP1-6, or see labels
+    NRF24 | CHIPKIT MAX32
+    ------+----------------------
+     MISO | J13-1  (DIN)
+     MOSI | J13-4  (DOUT)
+     SCLK | J13-3  (SS)
+          |
+       CS | 75     (std IO)
+     PROG | 77     (std IO)
+    RESET | 76     (std IO)
+          |
+       5V | JP6, 5V0 (top right)
+      GND | J13-6, or see labels
+
+  NOTE:
+  
+    Jumpers JP3 and JP4 set to MASTER position.
 
 
 #### DEFAULT PINS FOR TEENSY LC
 
-  ...
+    NRF24 | TEENSY LC
+    ------+----------------------
+     MISO | MISO0  (12)
+     MOSI | MOSI0  (11)
+     SCLK | SCK0   (13)
+          |
+       CS | CS0    (10)
+     PROG | 9      (std IO)
+    RESET | 8      (std IO)
+          |
+       5V | Vin 5V (near the USB)
+      GND | GND    (near the USB)
+
+  NOTE:
   
+    CS0 is still manually toggled in the code
+
 
 ---
 ## COMPILE & INSTALL
@@ -217,17 +255,25 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
     platform = microchippic32
     board = mega_pic32
     framework = arduino
+    build_flags = -DBOARD_MAX32
     
     ;[env:teensylc]
     ;platform = teensy
     ;board = teensylc
     ;framework = arduino
+    ;build_flags = -DBOARD_TEENSYLC
 
   Just comment out the stuff you don't need with a leading semicolon.  
   Depending on your selection, PlatformIO will automatically install the proper toolchains, required
   to compile the software for the board you selected.
 
+
 ### PC
+
+  ...
+
+
+### NRF
 
   ...
 
@@ -282,6 +328,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
      0       set NRF memory page address (n*512) to zero
      +       increase NRF memory page address; max is 63
      -       decrease NRF memory page address
+     =       show NRF memory page address in decimal
      i       initialize NRF via RESET and PROG pin cycle
      S       show flash memory status (in human readable form)
      s       show flash memory status (FSR register value in HEX)
@@ -319,9 +366,19 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
   ...
 
-##### (0/+/-) ADJUST NRF24 MEMORY POINTER
+##### (0/+/-/=) ADJUST/SHOW NRF24 MEMORY POINTER
 
-  ...
+  Adjust or print the value of the NRF's memory page pointer.
+  It's value can be 0..63.
+  
+  Notice that the 16kB variant of the chip can only use 0..31, but that
+  has to be controlled by the PC software.
+
+  '+' increases the memory page pointer by one  
+  '-' decreases the memory page pointer by one  
+  '0' sets the memory page pointer to 0 (zero)  
+  '=' prints the current value in decimal (0..63)
+
 
 ##### (s/S) SHOW FLASH MEMORY STATUS
 
