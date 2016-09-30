@@ -63,7 +63,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
 ### STATUS:
 
-  Board:
+  BOARD, all main functionalities implemented:
 
     [X] serial comm (PC)
     [X] serial buffer dump
@@ -78,33 +78,25 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
     [X] automatic pin selections for different boards
     [ ] ...
 
-  NRF:
+  PC, :
+    
+    [ ] HEX file read
+    [ ] BIN file read
+    [ ] serial comm
+    [ ] check connection to board (all behave differently)
+    [ ] ...
+
+  NRF, pending:
 
     [ ] InfoPage dumper firmware
 
-  PC:    
-    
-    [ ] PC SW, Python
-    [X] lot of checkboxes missing
-    [ ] ...
-
-
-### CHANGES 2016/09/29:
-
-    - board FW able to erase/program/read chip;
-      only tested on Chipkit Max32, so far...
-
-### CHANGES 2016/09/XX:
-
-    - initial upload; not much to see, for now...
 
 ### TODO:
 
-  - Teensy LC pins
   - function for "while( nrfReadFSR() & NRF_FSR_RDYN )..."
   - verify memory (compare with buffer)
   - erase page (maybe...)
-  -
+  - ...
 
 ---
 ## REQUIREMENTS
@@ -151,7 +143,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
   a 5V or a 3V3 power supply.  
   Notice: EITHER, not BOTH:
   
-    5V   VBUS  *recommended*
+    5V   VBUS  *highly recommended*
     3V3  VDD
 
   NOTE 1:
@@ -193,7 +185,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
      PROG | 77     (std IO)
     RESET | 76     (std IO)
           |
-       5V | JP6, 5V0 (top right)
+     VBUS | JP6, 5V0 (top right (when USB left))
       GND | J13-6, or see labels
 
   NOTE:
@@ -213,7 +205,7 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
      PROG | 9      (std IO)
     RESET | 8      (std IO)
           |
-       5V | Vin 5V (near the USB)
+     VBUS | Vin 5V (near the USB)
       GND | GND    (near the USB)
 
   NOTE:
@@ -306,6 +298,12 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
     Some boards, e.g. the ChipKIT Max32, perform a reset after
     the serial port on the PC was opened and spend some seconds
     in the bootloader first.
+
+  NOTE 4:
+  
+    Some boards, e.g. the Teensy LC don't come with an external chip for USB
+    communication (e.g. FTDI). The communication can only be established after the
+    "boot procedure" (lol, I know :'-) is over.
 
 
 ### TERMINAL MODE
@@ -433,10 +431,9 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
   
 
 
-### PROGRAMMING
+### PROGRAMMING VIA PC APPLICATION
 
   ...
-
 
 
 ---
@@ -467,7 +464,6 @@ FMMT666(ASkr)
 [8]:  http://docs.platformio.org/en/stable/installation.html
 [9]:  https://en.wikipedia.org/wiki/WTFPL
 [10]: https://en.wikipedia.org/wiki/Pip_(package_manager)
-
 
 [20]: https://reference.digilentinc.com/chipkit_max32/refmanual
 [21]: https://www.pjrc.com/teensy/teensyLC.html
