@@ -1,3 +1,11 @@
-*~
-*.bak
-*.tmp
+*
+
+!.gitignore
+!/board
+!/board/*
+!/nrf
+!/nrf/*
+!/pc
+!/pc/*
+
+!README.md

@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 #include "config.h"
-#include "spi.h"
+#include "spi_loc.h"
 #include "nrf24lu1.h"
 
 

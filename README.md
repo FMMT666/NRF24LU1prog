@@ -90,12 +90,21 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
     [ ] InfoPage dumper firmware
 
+### CHANGES:
+
+#### 2018/06/XX
+
+  - fixed Windoze build (upper/lower case SPI.h)
+  - updated the gitignores
+
 
 ### TODO:
 
   - function for "while( nrfReadFSR() & NRF_FSR_RDYN )..."
   - verify memory (compare with buffer)
+  - dump FW app
   - erase page (maybe...)
+  - PC app
   - ...
 
 ---

@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "serial.h"
-#include "spi.h"
+#include "spi_loc.h"
 #include "nrf24lu1.h"
 
 

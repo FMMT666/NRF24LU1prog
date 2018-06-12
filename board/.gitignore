@@ -1,5 +1,11 @@
-*~
-*.bak
-*.tmp
-.pioenvs
-.travis.yml
+*
+
+!.gitignore
+!/lib
+!/source
+
+!/lib/readme.txt
+!/source/*.cpp
+!/source/*.h
+
+!platformio.ini
