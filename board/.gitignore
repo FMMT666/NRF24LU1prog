@@ -2,10 +2,10 @@
 
 !.gitignore
 !/lib
-!/source
+!/src
 
 !/lib/readme.txt
-!/source/*.cpp
-!/source/*.h
+!/src/*.cpp
+!/src/*.h
 
 !platformio.ini

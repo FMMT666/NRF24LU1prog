@@ -85,12 +85,18 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
     [ ] serial comm
     [ ] check connection to board (all behave differently)
     [ ] ...
+    [X] Experimental code snippets
 
   NRF, pending:
 
     [ ] InfoPage dumper firmware
 
 ### CHANGES:
+
+#### 2018/11/XX
+
+  - merged experimental Python PC app from "coffeerr2004001"
+  - fixed some gitignores
 
 #### 2018/06/XX
 
@@ -271,7 +277,10 @@ Notice that you cannot just flash the 32kB bootloader into the 16kB version of t
 
 ### PC
 
-  ...
+  Quickly merged an untested code snippet from "coffeerr2004001". Thx!  
+  
+  Use the source :-)  
+  Maybe that's helpful for some folks...
 
 
 ### NRF
